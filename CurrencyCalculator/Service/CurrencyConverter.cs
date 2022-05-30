@@ -1,4 +1,5 @@
-﻿using CurrencyCalculator.Model;
+﻿using System.Collections.Concurrent;
+using CurrencyCalculator.Model;
 using CurrencyCalculator.Service.Interface;
 
 namespace CurrencyCalculator.Service;
@@ -6,7 +7,7 @@ namespace CurrencyCalculator.Service;
 public class CurrencyConverter : ICurrencyConverter
 {
     private readonly IList<ExRate> _configuration = new List<ExRate>();
-    private readonly Dictionary<string, List<string>> _graph = new();
+    private readonly ConcurrentDictionary<string, List<string>> _graph = new();
 
     public void ClearConfiguration()
     {
