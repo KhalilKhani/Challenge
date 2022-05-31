@@ -39,6 +39,8 @@ class GraphNavigation : IGraphNavigation
     }
 
     public bool HasNode(string node) => _graph.ContainsKey(node);
+    
+    public void ClearGraph() => _graph.Clear();
 
     private List<string> TwoWayGraphNavigation()
     {

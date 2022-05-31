@@ -9,5 +9,7 @@ public interface IGraphNavigation
     List<string> FindPath(string from, string to);
 
     bool HasNode(string node);
+    
+    void ClearGraph();
 
 }

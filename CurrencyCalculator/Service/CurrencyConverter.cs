@@ -18,6 +18,7 @@ public class CurrencyConverter : ICurrencyConverter
     public void ClearConfiguration()
     {
         _configuration.Clear();
+        _graphNavigation.ClearGraph();
     }
 
     public void UpdateConfiguration(IEnumerable<ExRate> conversionRates)
