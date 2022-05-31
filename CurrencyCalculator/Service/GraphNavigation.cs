@@ -5,11 +5,10 @@ using CurrencyCalculator.Service.Interface;
 namespace CurrencyCalculator.Service;
 
 class GraphNavigation : IGraphNavigation
-
 {
     private readonly ConcurrentDictionary<string, List<string>> _graph = new();
-    private List<List<string>> _baseNavigation = new ();
-    private List<List<string>> _targetNavigation =new ();
+    private List<List<string>> _baseNavigation = new();
+    private List<List<string>> _targetNavigation = new();
 
     public void UpdateGraph(IEnumerable<ExRate> configuration)
     {
@@ -31,7 +30,7 @@ class GraphNavigation : IGraphNavigation
     {
         if (_graph[from].Contains(to))
             return new List<string> {from, to};
-        
+
         _baseNavigation = new List<List<string>> {new() {from}};
         _targetNavigation = new List<List<string>> {new() {to}};
 
@@ -39,26 +38,38 @@ class GraphNavigation : IGraphNavigation
     }
 
     public bool HasNode(string node) => _graph.ContainsKey(node);
-    
+
     public void ClearGraph() => _graph.Clear();
 
     private List<string> TwoWayGraphNavigation()
     {
-        while (AddLevel(_baseNavigation) || AddLevel(_targetNavigation))
+        while (true)
         {
+            var nextBaseLevel = AddLevel(_baseNavigation);
+            var nextTargetLevel = AddLevel(_targetNavigation);
+            if (!(nextBaseLevel || nextTargetLevel))
+                return new List<string>();
+            
             foreach (var b in _baseNavigation)
             foreach (var t in _targetNavigation)
-                if (b.Last() == t.Last())
-                {
-                    var path = new List<string>();
-                    path.AddRange(b);
-                    t.Reverse();
-                    path.AddRange(t.Skip(1));
-                    return path;
-                }
+            {
+                var common = b.FirstOrDefault(c => t.Contains(c));
+                if (common != null)
+                    return CreateFinalPath(b, common, t);
+            }
         }
+    }
 
-        return new List<string>();
+    private static List<string> CreateFinalPath(List<string> pathOne, string common, List<string> pathTwo)
+    {
+        var subPathOne = pathOne.GetRange(0, pathOne.IndexOf(common));
+        var subPathTwo = pathTwo.GetRange(0, pathTwo.IndexOf(common));
+        subPathTwo.Reverse();
+        var path = new List<string>();
+        path.AddRange(subPathOne);
+        path.Add(common);
+        path.AddRange(subPathTwo);
+        return path;
     }
 
     private bool AddLevel(List<List<string>> subGraph)
@@ -72,6 +83,7 @@ class GraphNavigation : IGraphNavigation
                 if (t.Contains(currency)) continue;
                 toAdd.Add(new List<string>(t) {currency});
             }
+
             toRemove.Add(t);
         }
 
