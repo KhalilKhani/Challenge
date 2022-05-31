@@ -14,8 +14,8 @@ public class Program
         var initialRates = InitialRates();
         convertor.UpdateConfiguration(initialRates);
 
-        const string from = "EUR";
-        const string to = "GBP";
+        const string from = "CAD";
+        const string to = "JPY";
         const double amount = 100;
         var result = convertor.Convert(from, to, amount);
         
@@ -34,9 +34,11 @@ public class Program
     {
         return new List<ExRate>
         {
+            new() {From = "JPY", To = "GBP", Rate = 0.58},
             new() {From = "USD", To = "CAD", Rate = 1.34},
-            new() {From = "CAD", To = "GBP", Rate = 0.58},
-            new() {From = "USD", To = "EUR", Rate = 0.86}
+            new() {From = "CAD", To = "JPY", Rate = 0.85},
+            new() {From = "USD", To = "EUR", Rate = 0.86},
+            new() {From = "JPY", To = "EUR", Rate = 0.85},
         };
     }
 }
